@@ -2,6 +2,12 @@ import React from 'react';
 
 const CategoryMenu = ({ categories, setSelectedCategory }) => (
     <div className="category-menu">
+        <div
+            className="category-item"
+            onClick={() => setSelectedCategory('All')}
+        >
+            <h2>All Categories</h2>
+        </div>
         {categories.map(category => (
             <div
                 className="category-item"

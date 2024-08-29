@@ -1,13 +1,15 @@
 import React from 'react';
 
-const SearchBar = ({ setSearchTerm }) => (
-    <div className="search-bar">
-        <input
-            type="text"
-            placeholder="Search for products..."
-            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-        />
-    </div>
-);
+const SearchBar = ({ onSearch }) => {
+    return (
+        <div>
+            <input
+                type="text"
+                placeholder="Search for products..."
+                onChange={(e) => onSearch(e.target.value)}
+            />
+        </div>
+    );
+};
 
 export default SearchBar;

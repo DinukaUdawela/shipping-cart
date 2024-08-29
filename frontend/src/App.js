@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import ProductList from './components/ProductList';
 import CategoryMenu from './components/CategoryMenu';
 import SearchBar from './components/SearchBar';
 import './styles.css';
+import axios from 'axios';
 
 const App = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const result = await axios.get('http://localhost:5000/products');
-            setProducts(result.data);
+            try {
+                const result = await axios.get('http://localhost:5000/products');
+                setProducts(result.data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
         };
 
         const fetchCategories = async () => {
-            const result = await axios.get('http://localhost:5000/categories');
-            setCategories(result.data);
+            try {
+                const result = await axios.get('http://localhost:5000/categories');
+                setCategories(result.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
         };
 
         fetchProducts();
@@ -27,10 +35,9 @@ const App = () => {
     }, []);
 
     const filteredProducts = products.filter(product => {
-        return (
-            (selectedCategory === '' || product.category === selectedCategory) &&
-            (searchTerm === '' || product.name.toLowerCase().includes(searchTerm))
-        );
+        const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+        const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
     });
 
     return (
@@ -38,7 +45,14 @@ const App = () => {
             <div className="header">
                 <h1>Shopping Cart</h1>
             </div>
-            <SearchBar setSearchTerm={setSearchTerm} />
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search for products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
             <CategoryMenu categories={categories} setSelectedCategory={setSelectedCategory} />
             <ProductList products={filteredProducts} />
         </div>
